@@ -1,0 +1,7 @@
+export const REGISTER_START = "REGISTER_START";
+export const REGISTER_SUCCES = "REGISTER_SUCCES";
+export const REGISTER_ERROR = "REGISTER_ERROR";
+export const AUTH_START = "AUTH_START";
+export const AUTH_SUCCES = "AUTH_SUCCES";
+export const AUTH_ERROR = "AUTH_ERROR";
+export const AUTH_CANCEL = "AUTH_CANCEL";
