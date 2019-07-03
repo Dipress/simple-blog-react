@@ -1,45 +1,46 @@
-import React, { Fragment, useState, useContext } from "react";
+import React, { Fragment, useState, useContext, useEffect } from "react";
 import { Grid, Segment, Form, Button, Message } from "semantic-ui-react";
-import { POST_CREATE_SUCCESS, POST_CREATE_ERROR } from "../../context/types";
+import { GET_POST_SUCCESS, GET_POST_ERROR } from "../../context/types";
 import BlogContext from "../../context/blog/BlogContext";
 import axios from "axios";
 
-const Create = props => {
-  const { dispatch } = useContext(BlogContext);
-
+const Edit = props => {
+  const { state, dispatch } = useContext(BlogContext);
   const [post, setPost] = useState({
+    id: null,
+    user_id: null,
     title: "",
-    body: ""
+    body: "",
+    created_at: "",
+    updated_at: ""
   });
+
+  useEffect(() => {
+    getPost(props.match.params.id);
+  }, [props.match.params.id]);
 
   const [errors, setErrors] = useState({
     message: null,
     data: {}
   });
 
-  const onChange = e =>
-    setPost({
-      ...post,
-      [e.target.name]: e.target.value
-    });
-
-  const createPost = async post => {
+  const getPost = async id => {
     await axios
-      .post(
-        "http://localhost:8080/posts",
-        { title, body },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`
-          }
-        }
-      )
+      .get(`http://localhost:8080/posts/${id}`)
       .then(data => {
-        dispatch({ type: POST_CREATE_SUCCESS, payload: data.data });
-        props.history.push("/dashboard");
+        dispatch({ type: GET_POST_SUCCESS, payload: data.data });
+        setPost({
+          ...post,
+          id: data.data.id,
+          user_id: data.data.user_id,
+          title: data.data.title,
+          body: data.data.body,
+          created_at: data.data.created_at,
+          updated_at: data.data.updated_at
+        });
       })
       .catch(error => {
-        dispatch({ type: POST_CREATE_ERROR });
+        dispatch({ type: GET_POST_ERROR });
         setErrors({
           message: error.response ? error.response.data.message : error.message,
           data: error.response ? error.response.data.errors : ""
@@ -47,12 +48,35 @@ const Create = props => {
       });
   };
 
+  const onChange = e =>
+    setPost({
+      ...post,
+      [e.target.name]: e.target.value
+    });
+
+  const updatePost = async post => {
+    await axios.put(
+      `http://localhost:8080/posts/${post.id}`,
+      { title, body },
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`
+        }
+      }
+    );
+  };
+
   const onSubmit = (e, post) => {
     e.preventDefault();
-    createPost(post);
+    updatePost(post);
   };
 
   const { title, body } = post;
+
+  if (state.loading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <Fragment>
       {errors.message && (
@@ -79,7 +103,7 @@ const Create = props => {
           <Grid.Column style={{ maxWidth: 800 }}>
             <Form size="large" onSubmit={onSubmit} noValidate>
               <Segment stacked>
-                <h1>Create Post</h1>
+                <h1>Edit Post</h1>
                 <Form.Input
                   onChange={onChange}
                   fluid
@@ -98,7 +122,7 @@ const Create = props => {
                   error={errors.data && errors.data.body ? true : false}
                 />
                 <Button type="submit" color="teal" fluid size="large">
-                  Create
+                  Edit
                 </Button>
               </Segment>
             </Form>
@@ -109,4 +133,4 @@ const Create = props => {
   );
 };
 
-export default Create;
+export default Edit;

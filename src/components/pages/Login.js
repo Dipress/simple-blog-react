@@ -1,11 +1,11 @@
-import React, {useState, useContext, Fragment} from "react";
-import {Grid, Segment, Form, Button, Message} from "semantic-ui-react";
+import React, { useState, useContext, Fragment } from "react";
+import { Grid, Segment, Form, Button, Message } from "semantic-ui-react";
 import AuthContext from "../../context/auth/AuthContext";
-import {AUTH_SUCCES, AUTH_ERROR} from "../../context/types";
+import { AUTH_SUCCES, AUTH_ERROR } from "../../context/types";
 import axios from "axios";
 
 const Login = props => {
-  const {dispatch} = useContext(AuthContext);
+  const { dispatch } = useContext(AuthContext);
 
   const [user, setUser] = useState({
     email: "",
@@ -25,13 +25,13 @@ const Login = props => {
 
   const login = async user => {
     await axios
-      .post("http://localhost:8080/signin", {email, password})
+      .post("http://localhost:8080/signin", { email, password })
       .then(data => {
-        dispatch({type: AUTH_SUCCES, payload: data.data.token});
+        dispatch({ type: AUTH_SUCCES, payload: data.data.token });
         props.history.push("/dashboard");
       })
       .catch(error => {
-        dispatch({type: AUTH_ERROR});
+        dispatch({ type: AUTH_ERROR });
         setErrors({
           message: error.response ? error.response.data.message : error.message,
           data: error.response ? error.response.data.errors : ""
@@ -43,13 +43,13 @@ const Login = props => {
     login(user);
   };
 
-  const {email, password} = user;
+  const { email, password } = user;
 
   return (
     <Fragment>
       {errors.message && (
         <Message negative>
-          <Message.Header style={{textTransform: "capitalize"}}>
+          <Message.Header style={{ textTransform: "capitalize" }}>
             {errors.message}:
           </Message.Header>
           <ul>
@@ -62,9 +62,13 @@ const Login = props => {
           </ul>
         </Message>
       )}
-      <Grid textAlign="center" style={{height: "100vh"}} verticalAlign="middle">
+      <Grid
+        textAlign="center"
+        style={{ height: "100vh" }}
+        verticalAlign="middle"
+      >
         <Grid.Row>
-          <Grid.Column style={{maxWidth: 450}}>
+          <Grid.Column style={{ maxWidth: 450 }}>
             <Form size="large" onSubmit={onSubmit} noValidate>
               <Segment stacked>
                 <h1>Login</h1>

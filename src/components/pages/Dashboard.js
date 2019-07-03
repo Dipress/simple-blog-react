@@ -1,6 +1,6 @@
 import React from "react";
-import {Grid, Table, Button} from "semantic-ui-react";
-import {Link} from "react-router-dom";
+import { Grid, Table, Button } from "semantic-ui-react";
+import { Link } from "react-router-dom";
 
 const Dashboard = props => {
   return (
