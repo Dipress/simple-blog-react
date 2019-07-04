@@ -1,4 +1,6 @@
 import {
+  GET_POSTS_SUCCESS,
+  GET_POSTS_ERROR,
   POST_CREATE_SUCCESS,
   POST_CREATE_ERROR,
   GET_POST_SUCCESS,
@@ -7,6 +9,19 @@ import {
 
 export default (state, action) => {
   switch (action.type) {
+    case GET_POSTS_SUCCESS:
+      return {
+        ...state,
+        posts: action.payload,
+        loading: false,
+      }
+    case GET_POSTS_ERROR: {
+      return {
+        ...state,
+        posts: [],
+        loading: true,
+      }
+    }
     case POST_CREATE_SUCCESS:
       return {
         ...state,

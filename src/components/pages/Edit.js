@@ -1,11 +1,11 @@
-import React, { Fragment, useState, useContext, useEffect } from "react";
-import { Grid, Segment, Form, Button, Message } from "semantic-ui-react";
-import { GET_POST_SUCCESS, GET_POST_ERROR } from "../../context/types";
+import React, {Fragment, useState, useContext, useEffect} from "react";
+import {Grid, Segment, Form, Button, Message} from "semantic-ui-react";
+import {GET_POST_SUCCESS, GET_POST_ERROR} from "../../context/types";
 import BlogContext from "../../context/blog/BlogContext";
 import axios from "axios";
 
 const Edit = props => {
-  const { state, dispatch } = useContext(BlogContext);
+  const {state, dispatch} = useContext(BlogContext);
   const [post, setPost] = useState({
     id: null,
     user_id: null,
@@ -17,6 +17,7 @@ const Edit = props => {
 
   useEffect(() => {
     getPost(props.match.params.id);
+    // eslint-disable-next-line
   }, [props.match.params.id]);
 
   const [errors, setErrors] = useState({
@@ -28,7 +29,7 @@ const Edit = props => {
     await axios
       .get(`http://localhost:8080/posts/${id}`)
       .then(data => {
-        dispatch({ type: GET_POST_SUCCESS, payload: data.data });
+        dispatch({type: GET_POST_SUCCESS, payload: data.data});
         setPost({
           ...post,
           id: data.data.id,
@@ -40,7 +41,7 @@ const Edit = props => {
         });
       })
       .catch(error => {
-        dispatch({ type: GET_POST_ERROR });
+        dispatch({type: GET_POST_ERROR});
         setErrors({
           message: error.response ? error.response.data.message : error.message,
           data: error.response ? error.response.data.errors : ""
@@ -55,15 +56,18 @@ const Edit = props => {
     });
 
   const updatePost = async post => {
-    await axios.put(
-      `http://localhost:8080/posts/${post.id}`,
-      { title, body },
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`
+    await axios
+      .put(
+        `http://localhost:8080/posts/${props.match.params.id}`,
+        {title, body},
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`
+          }
         }
-      }
-    );
+      )
+      .then(data => console.log(data))
+      .catch(error => console.log(error));
   };
 
   const onSubmit = (e, post) => {
@@ -71,17 +75,18 @@ const Edit = props => {
     updatePost(post);
   };
 
-  const { title, body } = post;
+  const {title, body} = post;
 
   if (state.loading) {
     return <div>Loading...</div>;
   }
 
+  console.log(post.id);
   return (
     <Fragment>
       {errors.message && (
         <Message negative>
-          <Message.Header style={{ textTransform: "capitalize" }}>
+          <Message.Header style={{textTransform: "capitalize"}}>
             {errors.message}:
           </Message.Header>
           <ul>
@@ -94,13 +99,9 @@ const Edit = props => {
           </ul>
         </Message>
       )}
-      <Grid
-        textAlign="center"
-        style={{ height: "50vh" }}
-        verticalAlign="middle"
-      >
+      <Grid textAlign="center" style={{height: "50vh"}} verticalAlign="middle">
         <Grid.Row>
-          <Grid.Column style={{ maxWidth: 800 }}>
+          <Grid.Column style={{maxWidth: 800}}>
             <Form size="large" onSubmit={onSubmit} noValidate>
               <Segment stacked>
                 <h1>Edit Post</h1>
