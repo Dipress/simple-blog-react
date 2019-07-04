@@ -4,7 +4,10 @@ import {
   POST_CREATE_SUCCESS,
   POST_CREATE_ERROR,
   GET_POST_SUCCESS,
-  GET_POST_ERROR
+  GET_POST_ERROR,
+  UPDATE_POST_SUCCESS,
+  UPDATE_POST_ERROR,
+  DELETE_POST_SUCCESS
 } from "../types";
 
 export default (state, action) => {
@@ -13,14 +16,14 @@ export default (state, action) => {
       return {
         ...state,
         posts: action.payload,
-        loading: false,
-      }
+        loading: false
+      };
     case GET_POSTS_ERROR: {
       return {
         ...state,
         posts: [],
-        loading: true,
-      }
+        loading: true
+      };
     }
     case POST_CREATE_SUCCESS:
       return {
@@ -41,6 +44,21 @@ export default (state, action) => {
         loading: true,
         post: {}
       };
+    case UPDATE_POST_SUCCESS:
+      return {
+        ...state,
+        posts: state.posts.map(post =>
+          post.id === action.payload.id ? action.payload : post
+        ),
+        loading: false
+      };
+    case DELETE_POST_SUCCESS:
+      return {
+        ...state,
+        posts: state.posts.filter(post => post.id !== action.payload)
+      }
+    case UPDATE_POST_ERROR:
+      return state;
     default:
       return state;
   }

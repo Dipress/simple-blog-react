@@ -23,6 +23,7 @@ const Posts = props => {
 
   useEffect(() => {
     getPosts();
+    // eslint-disable-next-line
   }, []);
 
   return (

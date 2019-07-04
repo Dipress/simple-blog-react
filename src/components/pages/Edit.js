@@ -1,6 +1,6 @@
 import React, {Fragment, useState, useContext, useEffect} from "react";
 import {Grid, Segment, Form, Button, Message} from "semantic-ui-react";
-import {GET_POST_SUCCESS, GET_POST_ERROR} from "../../context/types";
+import {GET_POST_SUCCESS, GET_POST_ERROR, UPDATE_POST_SUCCESS, UPDATE_POST_ERROR} from "../../context/types";
 import BlogContext from "../../context/blog/BlogContext";
 import axios from "axios";
 
@@ -66,8 +66,17 @@ const Edit = props => {
           }
         }
       )
-      .then(data => console.log(data))
-      .catch(error => console.log(error));
+      .then(data => {
+        dispatch({ type: UPDATE_POST_SUCCESS, payload: data.data})
+        props.history.push("/dashboard");
+      })
+      .catch(error => {
+        dispatch({type: UPDATE_POST_ERROR})
+        setErrors({
+          message: error.response ? error.response.data.message : error.message,
+          data: error.response ? error.response.data.errors : ""
+        });
+      });
   };
 
   const onSubmit = (e, post) => {
@@ -80,8 +89,7 @@ const Edit = props => {
   if (state.loading) {
     return <div>Loading...</div>;
   }
-
-  console.log(post.id);
+  
   return (
     <Fragment>
       {errors.message && (
