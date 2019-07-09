@@ -2,7 +2,7 @@ import React from "react";
 import "semantic-ui-css/semantic.min.css";
 import AuthState from "./context/auth/AuthState";
 import BlogState from "./context/blog/BlogState";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import {BrowserRouter as Router, Switch, Route} from "react-router-dom";
 
 // Pages
 import Home from "./components/pages/Home";
@@ -21,6 +21,15 @@ import Navbar from "./components/layout/Navbar";
 // Hoc
 import AppRoute from "./components/hoc/AppRoute";
 import ProtectedRoute from "./components/hoc/ProtectedRoute";
+
+import jwtDecode from "jwt-decode";
+
+if (localStorage.getItem("token")) {
+  const decodedToken = jwtDecode(localStorage.getItem("token"));
+  if (decodedToken.exp * 1000 < Date.now()) {
+    localStorage.removeItem("token");
+  }
+}
 
 function App() {
   return (
